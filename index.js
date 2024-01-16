@@ -1,23 +1,7 @@
 
-
 const inputFile = 'counting100.hack';
-const outputFile = 'ROM Counting100.bool';
 
-const RAMCapacity = 64;
-
-const DefaultSymbols = new Map();
-{
-    // Virtual registers
-    for (let i = 0; i < 16; i++) {
-        DefaultSymbols.set('R' + i, i);
-    }
-
-    // Predefined pointers are not used (yet)
-
-    // I/O pointers
-    DefaultSymbols.set('SCREEN', 0x4000);
-    DefaultSymbols.set('KBD', 0x6000);
-}
+const {outputPrefix, outputSuffix, RAMCapacity, DefaultSymbols} = require('./constants');
 
 function MapDestination(word) {
     if (word == 'null') {
@@ -339,7 +323,7 @@ function assemble(binary) {
     const InputIndex = 1;
 
     const InstructionsWidth = 10;
-    const MaxAdressWidth = Math.ceil(Math.log2(binary.length));
+    const MaxAdressWidth = Math.ceil(Math.log2(binary.length))+1;
 
     const NormalSplit = 3;
     const InvertedSplit = 4;
@@ -442,6 +426,8 @@ function main() {
 
     let compiled = compile(fs.readFileSync(inputFile));
     let assembled = assemble(compiled);
+
+    let outputFile = outputPrefix + inputFile.split('.')[0] + outputSuffix;
 
     fs.writeFileSync(outputFile, assembled);
 }
