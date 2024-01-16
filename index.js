@@ -7,6 +7,11 @@ const {moveFiles} = require('./move_files');
 
 
 function convertAll() {
+    fs.readdirSync('./target/')
+        .forEach((fileName) => {
+            fs.rmSync('./target/' + fileName);
+        });
+
     let files = fs.readdirSync('./src/');
 
     files.forEach((fileName) => {

@@ -167,8 +167,8 @@ function compile(input, fileName) {
                 }
                 number = Pointers.get(expression);
             }
-            if (number >= 2**16) {
-                error(`The number ${number} is to large, it can be at most ${2**16 -1}`);
+            if (number >= 2**15) {
+                error(`The number ${number} is to large, it can be at most ${2**15 -1}`);
             }
             if (number < 0) {
                 error(`Numbers in A instructions cannot be negative`);
