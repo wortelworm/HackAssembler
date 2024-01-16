@@ -23,8 +23,9 @@ $ sum: 1
     @LOOP
     0;JMP // Goto LOOP
 (END)
-    @sum
-    @sum
+    @1
+    @2
+    @3
     @sum
     @sum
     @END
