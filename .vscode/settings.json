@@ -1,0 +1,6 @@
+{
+    // this has been turned off, because it is annoying
+    // while writing the source files
+    "editor.acceptSuggestionOnCommitCharacter": false,
+    "editor.acceptSuggestionOnEnter": "off",
+}

@@ -272,6 +272,8 @@ function compile(input, fileName) {
     input = input.replaceAll('\r\n', '\n');
     input = input.replaceAll('\r', '\n');
 
+    let tmps = '';
+
     let lines = input.split('\n');
     for (let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
         let line = lines[lineNumber];
@@ -287,8 +289,13 @@ function compile(input, fileName) {
             continue;
         }
 
+        if (line[0] != '$' && line[0] != '(')
+            tmps += line + '\r\n';
+
         handleLine(line, lineNumber, fileName);
     }
+
+    require('fs').writeFileSync(`./tmp/${fileName.split('.')[0]}.tmp`, tmps);
 
     for (let i = 0; i < binary.length; i++) {
         if (isNaN(binary[i])) {

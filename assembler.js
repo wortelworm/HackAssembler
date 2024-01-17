@@ -7,15 +7,14 @@
  * @returns 
  */
 function assemble(binary, inputFile) {
-    let circuit = `
-{0,Comment,{11,-7},This ROM circuit is automaticly generated\\, it represents ${inputFile}},
-{1,Input,{11,2},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}},
-{2,NOT,{16,20},{{1,0}}},
-{3,Split,{21,2},{{1,0}}},
-{4,Split,{21,20},{{2,0}}},
-{5,OR,{39,-2},{{},{}}},
-{6,NOT,{43,-2},{{}}},
-`;
+    let circuit = ``;
+    circuit += `{0,Comment,{11,-7},This ROM circuit is automaticly generated\\, it represents ${inputFile}},\r\n`;
+    circuit += `{1,Input,{11,2},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}},\r\n`;
+    circuit += `{2,NOT,{16,20},{{1,0}}},\r\n`;
+    circuit += `{3,Split,{21,2},{{1,0}}},\r\n`;
+    circuit += `{4,Split,{21,20},{{2,0}}},\r\n`;
+    circuit += `{5,OR,{39,-2},{{},{}}},\r\n`;
+    circuit += `{6,NOT,{43,-2},{{}}},\r\n`;
 
     const InputIndex = 1;
 
@@ -61,7 +60,7 @@ function assemble(binary, inputFile) {
                 continue;
             }
 
-            circuit += `{${nextOperatorIndex},AND,{${x+4},${y-(i+1)*4}},{${addressResult},${addressStr}}},\n`;
+            circuit += `{${nextOperatorIndex},AND,{${x+4},${y-(i+1)*4}},{${addressResult},${addressStr}}},\r\n`;
             addressResult = `{${nextOperatorIndex},0}`;
             addressReusable[i] = addressResult;
             nextOperatorIndex++;
@@ -80,20 +79,20 @@ function assemble(binary, inputFile) {
         }
         str = str.substring(0, str.length-1);
 
-        circuit += `{${nextOperatorIndex},Join,{${x},${y}},{${str}}},\n`;
+        circuit += `{${nextOperatorIndex},Join,{${x},${y}},{${str}}},\r\n`;
         nextOperatorIndex++;
 
         // the selection stuff
         let instructionResult = nextOperatorIndex;
-        circuit += `{${nextOperatorIndex},AND,{${x+4},${y+6}},{{${nextOperatorIndex+1},0},{${nextOperatorIndex-1},0}}},\n`;
+        circuit += `{${nextOperatorIndex},AND,{${x+4},${y+6}},{{${nextOperatorIndex+1},0},{${nextOperatorIndex-1},0}}},\r\n`;
         nextOperatorIndex++;
-        circuit += `{${nextOperatorIndex},wide16,{${x+4},${y+2}},{${addressResult}}},\n`;
+        circuit += `{${nextOperatorIndex},wide16,{${x+4},${y+2}},{${addressResult}}},\r\n`;
         nextOperatorIndex++;
 
         // going to the output
         if (previousInstructionResult != -1) {
             // make an OR thingy
-            circuit += `{${nextOperatorIndex},OR,{${x+InstructionsWidth},${y+18}},{{${instructionResult},0},{${previousInstructionResult},0}}},\n`
+            circuit += `{${nextOperatorIndex},OR,{${x+InstructionsWidth},${y+18}},{{${instructionResult},0},{${previousInstructionResult},0}}},\r\n`
             instructionResult = nextOperatorIndex;
             nextOperatorIndex++;
         }
@@ -110,7 +109,7 @@ function assemble(binary, inputFile) {
     }
 
     // add output
-    circuit += `{${nextOperatorIndex},Output,{48,-2},{{${previousInstructionResult},0}}},\n`
+    circuit += `{${nextOperatorIndex},Output,{48,-2},{{${previousInstructionResult},0}}},\r\n`
 
     circuit += `{IO,{${InputIndex}},{${nextOperatorIndex}}}`;
     return circuit;
