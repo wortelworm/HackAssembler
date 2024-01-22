@@ -273,24 +273,34 @@ function compile(input, fileName) {
     input = input.replaceAll('\r', '\n');
 
     let tmps = '';
+    let commentCollected = '';
 
     let lines = input.split('\n');
     for (let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
         let line = lines[lineNumber];
-        line = line.replaceAll(' ', '');
-        line = line.replaceAll('\t', '');
 
         let commentPos = line.indexOf('//');
         if (commentPos >= 0) {
+            commentCollected = line.substring(commentPos + 2) + ' ';
             line = line.substring(0, commentPos);
         }
+        
+        line = line.replaceAll(' ', '');
+        line = line.replaceAll('\t', '');
 
         if (line == '') {
             continue;
         }
 
-        if (line[0] != '$' && line[0] != '(')
-            tmps += line + '\r\n';
+        if (line[0] != '$' && line[0] != '(') {
+            tmps += line;
+            if (commentCollected != '') {
+                tmps += '\t\t//' + commentCollected;
+                commentCollected = '';
+            }
+            
+            tmps += '\r\n';
+        }
 
         handleLine(line, lineNumber, fileName);
     }

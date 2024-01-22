@@ -30,23 +30,21 @@ $ Snake: 32
         @162
         D=A
         @Snake
-        A=M
         M=D
-
 
         // (3, 10)
         D=D+1
-        M=M+1
+        A=A+1
         M=D
         
         // (4, 10)
         D=D+1
-        M=M+1
+        A=A+1
         M=D
 
         // (5, 10)
         D=D+1
-        M=M+1
+        A=A+1
         M=D
 
     // SnakeBack = &Snake
@@ -94,14 +92,11 @@ $ Snake: 32
 
 
 (GameLoop)
-    // somehow determine direction & wall collision
-        // for now hardcoded to be (1, 0)
-        @coord
-        M=1
+    // somehow set new head location by determining direction & checking wall collision
+        // direction for now hardcoded to be (1, 0)
+            @coord
+            M=1
 
-    
-    
-    // move by given direction
         // set new head location in @coord
             @coord
             D=M
@@ -112,6 +107,8 @@ $ Snake: 32
             @coord
             M=D
 
+    
+    // move to given new head location
         // check if eating food
             // if(coord != Food) goto collision_checks
                 @coord
@@ -130,38 +127,146 @@ $ Snake: 32
                     @Food
                     M=D
                 
-                // i = SnakeFront
-                    @SnakeFront
-                    A=M
+                // i = SnakeBack
+                    @SnakeBack
                     D=M
                     @i
                     M=D
-                    
                 
                 (respawn_food_loop)
-                    // if (CurrentSnakePart == Food) goto respawn_food
+                    // if (*i == Food) goto respawn_food
+                        @i
+                        A=M
+                        D=M
+                        @Food
+                        D=D-M
 
+                        @respawn_food
+                        D;JEQ
+                    
+                    // if (i == SnakeFront) done
+                        @i
+                        D=M
+                        @SnakeFront
+                        D=D-M
 
+                        @respawn_food_finish
+                        D;JEQ
 
-            // skip tail removing
-                @after_tail_removing
-                0;JMP
+                    // i = ((i+1)-&Snake) % 32 + &Snake
+                        // D = ++i
+                            @i
+                            M=M+1
+                            D=M
+                        
+                        // D = D - &Snake - 32
+                            @Snake
+                            D=D-A
+                            @32
+                            D=D-A
+
+                        // jump past -32 if D<0
+                            @past_foodi_sub
+                            D;JLT
+
+                        // i -= 32
+                            @32
+                            D=A
+                            @i
+                            M=M-D
+
+                        (past_foodi_sub)
+                    
+                    @respawn_food_loop
+                    0;JMP
+
+            (respawn_food_finish)
+                // draw food
+                    // i = &SCREEN + Food
+                        @SCREEN
+                        D=A
+                        @Food
+                        D=D+M
+                        @i
+                        M=D
+                    
+                    // *i = food_color
+                        @2143
+                        D=A
+                        @i
+                        A=M
+                        M=D
+
+                // skip tail removing
+                    @after_tail_removing
+                    0;JMP
         
         (collision_checks)
-        // Todo: check collidings of snake with itself
-        
-        // no collision found
-            @before_tail_removing
-            0;JMP
+        // check collidings of snake with itself
+            // i = SnakeBack
+                @SnakeBack
+                D=M
+                @i
+                M=D
+            
+            (collision_self_loop)
+                // if (*i == coord) goto collision_found
+                    @i
+                    A=M
+                    D=M
+                    @coord
+                    D=D-M
 
-        // if collission found
-            (collision)
-            @GameOver
-            M=1
+                    @collision_found
+                    D;JEQ
+                
+                // if (i == SnakeFront) done
+                    @i
+                    D=M
+                    @SnakeFront
+                    D=D-M
+
+                    @no_collision_found
+                    D;JEQ
+
+                // i = ((i+1)-&Snake) % 32 + &Snake
+                    // D = ++i
+                        @i
+                        M=M+1
+                        D=M
+                    
+                    // D = D - &Snake - 32
+                        @Snake
+                        D=D-A
+                        @32
+                        D=D-A
+
+                    // jump past -32 if D<0
+                        @past_collision_self_sub
+                        D;JLT
+
+                    // i -= 32
+                        @32
+                        D=A
+                        @i
+                        M=M-D
+
+                    (past_collision_self_sub)
+                
+                @collision_self_loop
+                0;JMP
+
+            (no_collision_found)
+                @before_tail_removing
+                0;JMP
+
+            (collision_found)
+                @GameOver
+                M=1
 
         (before_tail_removing)
 
-        // load SnakeBack into coord2
+        // load *SnakeBack into coord2
             @SnakeBack
             A=M
             D=M
@@ -259,6 +364,7 @@ $ Snake: 32
     
     @GameLoop
     0;JMP
+
 
 (end)
     @end_internal
