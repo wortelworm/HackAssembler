@@ -142,7 +142,7 @@ function compile(input, fileName) {
      */
     let Pointers = new Map(DefaultSymbols);
 
-    let RAMFreePointer = 16;
+    let RAMFreePointer = 0;
 
     /**
      * 
@@ -295,7 +295,13 @@ function compile(input, fileName) {
         handleLine(line, lineNumber, fileName);
     }
 
-    require('fs').writeFileSync(`./tmp/${fileName.split('.')[0]}.tmp`, tmps);
+    {
+        let index = tmps.indexOf('\r\n');
+        tmps = tmps.substring(0, index) + ` // This program used ${RAMFreePointer} addresses of ram` + tmps.substring(index);
+
+        require('fs').writeFileSync(`./tmp/${fileName.split('.')[0]}.tmp`, tmps);
+    }
+
 
     for (let i = 0; i < binary.length; i++) {
         if (isNaN(binary[i])) {
