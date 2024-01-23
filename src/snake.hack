@@ -2,9 +2,12 @@
 // general purpuse counter/pointer
 $ i: 1
 
-
+// coordinates with x and y combined
 $ coord: 1
 $ coord2: 1
+
+// direction, a 'enum' of none, left, right, up and down
+$ direction: 1
 
 $ GameOver: 1
 
@@ -46,6 +49,10 @@ $ Snake: 32
         D=D+1
         A=A+1
         M=D
+    
+    // initialize coord as *SnakeFront
+        @coord
+        M=D
 
     // SnakeBack = &Snake
         @Snake
@@ -58,6 +65,11 @@ $ Snake: 32
         D=D+A
         @SnakeFront
         M=D
+
+    // Snake direction: right
+        @direction
+        M=1
+        M=M+1
 
     // Draw initial snake
         // (2, 10) is at SCREEN + (2 + 16*10) = SCREEN + 162 = 16546
@@ -92,20 +104,76 @@ $ Snake: 32
 
 
 (GameLoop)
-    // somehow set new head location by determining direction & checking wall collision
-        // direction for now hardcoded to be (1, 0)
-            @coord
-            M=1
+    // set new head location by determining direction & checking wall collision
+        // coord is still the previous head location from previous iteration
 
-        // set new head location in @coord
+        // if new keyboard input, replace old direction
+            @KBD
+            D=M
+            @past_direction_replace
+            D;JEQ
+            @direction
+            M=D
+            (past_direction_replace)
+        
+        // jump to correct location
+            @direction
+            D=M
+
+            @direction_left
+            D=D-1
+            D;JEQ
+
+            @direction_right
+            D=D-1
+            D;JEQ
+
+            @direction_up
+            D=D-1
+            D;JEQ
+
+            // direction down must be the one now
+
+        (direction_down)
+            @16
+            D=A
+            @coord
+            DM=M+D
+            @256
+            D=D-A
+            @collision_found
+            D;JGE
+            @past_wall_collission
+            0;JMP
+
+        (direction_right)
+            @coord
+            DM=M+1
+            @15
+            D=D&A
+            @collision_found
+            D;JEQ
+            @past_wall_collission
+            0;JMP
+
+        (direction_left)
             @coord
             D=M
-            @SnakeFront
-            A=M
-            D=D+M
+            M=M-1
+            @collision_found
+            D;JEQ
+            @past_wall_collission
+            0;JMP
 
+        (direction_up)
+            @16
+            D=A
             @coord
-            M=D
+            DM=M-D
+            @collision_found
+            D;JLT
+
+        (past_wall_collission)
 
     
     // move to given new head location

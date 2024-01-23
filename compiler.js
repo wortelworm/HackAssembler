@@ -302,7 +302,7 @@ function compile(input, fileName) {
             tmps += '\r\n';
         }
 
-        handleLine(line, lineNumber, fileName);
+        handleLine(line, lineNumber+1, fileName);
     }
 
     {
