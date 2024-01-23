@@ -1,0 +1,26 @@
+{
+	0,
+	Input,
+	{13,7},
+	{0}
+},
+{
+	1,
+	Output,
+	{17,7},
+	{
+		{0,0}
+	}
+},
+{
+	2,
+	Comment,
+	{13,2},
+This is just to make the wire go as I want
+it to go\, this circuit does not do anything
+},
+{
+	IO,
+	{0},
+	{1}
+}

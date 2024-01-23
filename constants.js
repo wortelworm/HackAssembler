@@ -12,12 +12,9 @@ const DefaultSymbols = new Map();
     DefaultSymbols.set('RANDOM', 0x7000);
 }
 
-const CPUCircuitsPath = '../DigitalLogicSimulator/DigitalLogicSimulator/data/CPUcircuits/'
-
 module.exports = {
     outputPrefix,
     outputSuffix,
     RAMCapacity,
-    DefaultSymbols,
-    CPUCircuitsPath
+    DefaultSymbols
 }
