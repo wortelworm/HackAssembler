@@ -118,6 +118,7 @@ function MapComputation(word) {
         case 'M&D':
             return 0b1000000;
         case 'M|D':
+        case 'D|M':
             return 0b1010101;
 
 
