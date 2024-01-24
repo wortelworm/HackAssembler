@@ -175,6 +175,21 @@ $ Snake: 32
 
         (past_wall_collission)
 
+    // draw new head
+        // pixel location: i=&SCREEN+coord
+            @SCREEN
+            D=A
+            @coord
+            D=D+M
+            @i
+            M=D
+        
+        // draw the color
+            @20359
+            D=A
+            @i
+            A=M
+            M=D
     
     // move to given new head location
         // check if eating food
@@ -382,22 +397,6 @@ $ Snake: 32
             D=M
             @end
             D;JNE
-
-        // draw new head
-            // pixel location: i=&SCREEN+coord
-                @SCREEN
-                D=A
-                @coord
-                D=D+M
-                @i
-                M=D
-            
-            // draw the color
-                @20359
-                D=A
-                @i
-                A=M
-                M=D
         
         // save new head
             // SnakeFront += 1
