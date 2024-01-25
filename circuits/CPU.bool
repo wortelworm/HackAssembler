@@ -371,14 +371,6 @@ Checks if jump is needed
 	}
 },
 {
-	42,
-	-ROM snake,
-	{7,11},
-	{
-		{}
-	}
-},
-{
 	IO,
 	{38},
 	{}
